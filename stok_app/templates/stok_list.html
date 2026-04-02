@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Stok Listesi{% endblock %}
+{% block body_class %}stok-listesi-page{% endblock %}
+{% block content %}
+
+<!-- Sidebar Aç/Kapat Butonu -->
+<button id="sidebarToggle" class="sidebar-toggle">☰ Menü</button>
+
+<!-- Sidebar Menü -->
+<aside id="sidebar" class="sidebar">
+    <button id="closeSidebar" class="close-btn">✖</button>
+    <h3>📁 Menü</h3>
+    <a href="{% url 'satis_list' %}">📊 Satış Geçmişi</a>
+    <a href="{% url 'toplu_satis' %}">🛒 Toplu Satış Yap</a>
+    <a href="{% url 'urun_ekle' %}">➕ Ürün Ekle</a>
+    <a href="{% url 'musteri_ekle' %}">➕ Yeni Müşteri</a>
+    <a href="{% url 'musteri_list' %}">📋 Müşteri Listesi</a>
+    <a href="{% url 'urun_yukle' %}">➕ Excelden Toplu Ürün Ekle</a>
+</aside>
+
+<!-- Sayfa İçeriği -->
+<main id="content" class="content">
+    <h2>📦 Stok Listesi</h2>
+    
+    <!-- Kritik Stok Uyarısı -->
+    {% if kritik_urunler %}
+    <div id="kritikUyari" class="alert">
+        <strong>⚠ Kritik Stok Uyarısı:</strong>
+        <ul>
+            {% for urun in kritik_urunler %}
+                {% if urun.stok_miktari > 0 %}
+                    <li>{{ urun.ad }} ({{ urun.stok_miktari }} adet kaldı, eşik: {{ urun.kritik_stok }})</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Arama ve Filtreleme -->
+    <form method="GET" class="grid">
+        <input type="text" name="barkod" placeholder="🔍 Barkod veya Ürün Adı Ara">
+        <input type="number" name="min_fiyat" placeholder="💰 Min Fiyat">
+        <input type="number" name="max_fiyat" placeholder="💰 Max Fiyat">
+        <select name="stok_durum">
+            <option value="">📦 Tüm Stoklar</option>
+            <option value="stokta_var">✔ Stokta Var</option>
+            <option value="stokta_yok">❌ Stokta Yok</option>
+        </select>
+        <button type="submit" class="btn primary">🔍 Filtrele</button>
+    </form>
+
+    <!-- Stok Listesi -->
+    <table>
+        <thead>
+            <tr>
+                <th>📦 Ürün Adı</th>
+                <th>📁 Kategori</th>
+                <th>🔢 Barkod</th>
+                <th>📊 Stok Miktarı</th>
+                <th>⚖ Birim</th>
+                <th>💰 Fiyat</th>
+                <th>⚙ İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for urun in urunler %}
+            <tr>
+                <td>{{ urun.ad }}</td>
+                <td>{{ urun.kategori }}</td>
+                <td>{{ urun.barkod }}</td>
+                <td>{{ urun.stok_miktari }}</td>
+                <td>{{ urun.get_birim_display }}</td>
+                <td>{{ urun.fiyat }} ₺</td>
+                <td>
+                    <a href="{% url 'urun_guncelle' urun.id %}" class="btn secondary">✏ Güncelle</a>
+                    <a href="{% url 'urun_sil' urun.id %}" class="btn contrast">🗑 Sil</a>
+                    <a href="{% url 'urun_satis' urun.id %}" class="btn success">🛒 Satış Yap</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+
+<!-- Sidebar ve Kritik Stok JS -->
+<script>
+    document.getElementById("sidebarToggle").addEventListener("click", function() {
+        document.getElementById("sidebar").classList.add("active");
+        document.getElementById("content").classList.add("shift");
+    });
+
+    document.getElementById("closeSidebar").addEventListener("click", function() {
+        document.getElementById("sidebar").classList.remove("active");
+        document.getElementById("content").classList.remove("shift");
+    });
+
+    setTimeout(function() {
+        let kritikUyari = document.getElementById("kritikUyari");
+        if (kritikUyari) {
+            kritikUyari.style.opacity = "0";
+            setTimeout(() => kritikUyari.remove(), 500);
+        }
+    }, 4000);
+</script>
+
+{% endblock %}

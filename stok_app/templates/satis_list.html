@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}📊 Satış Geçmişi{% endblock %}
+
+{% block content %}
+<div class="satis-container">
+    <h2>📊 Satış Geçmişi</h2>
+
+    <!-- 🔍 Filtreleme Alanı -->
+    <form method="GET" class="form-inline satis-filtre-form">
+        <input type="date" name="min_tarih" class="form-control">
+        <input type="date" name="max_tarih" class="form-control">
+        <input type="text" name="satis_yapan" placeholder="Satış Yapan" class="form-control">
+        
+        <!-- 📌 Ürün ve Müşteri Seçimi -->
+        <select name="urun" class="form-control">
+            <option value="">Tüm Ürünler</option>
+            {% for urun in urunler %}
+                <option value="{{ urun.id }}">{{ urun.ad }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="musteri" class="form-control">
+            <option value="">Tüm Müşteriler</option>
+            {% for musteri in musteriler %}
+                <option value="{{ musteri.id }}">{{ musteri.ad_soyad }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn btn-primary">🔍 Filtrele</button>
+    </form>
+
+    <!-- 📊 Satış Tablosu -->
+    <div class="table-responsive">
+        <table class="table table-hover satis-table">
+            <thead>
+                <tr>
+                    <th>📦 Ürün</th>
+                    <th>👤 Müşteri</th>
+                    <th>💼 Satış Yapan</th>
+                    <th>📊 Adet</th>
+                    <th>💰 Birim Fiyat</th>
+                    <th>💵 Toplam</th>
+                    <th>📅 Tarih</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for satis in satislar %}
+                <tr>
+                    <td>{{ satis.urun.ad }}</td>
+                    <td>{{ satis.musteri.ad_soyad }}</td>
+                    <td>{{ satis.satis_yapan.username }}</td>
+                    <td>{{ satis.satis_adedi }}</td>
+                    <td>{{ satis.satis_fiyati }} ₺</td>
+                    <td><strong>{{ satis.toplam_tutar }} ₺</strong></td>
+                    <td>{{ satis.satis_tarihi|date:"d/m/Y H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-danger">🚨 Henüz hiç satış yapılmadı!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 🔙 Stok Listesine Dön Butonu -->
+    <a href="{% url 'stok_list' %}" class="btn btn-secondary satis-don-btn">🔙 Stok Listesine Dön</a>
+</div>
+{% endblock %}

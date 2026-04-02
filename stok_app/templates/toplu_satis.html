@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block title %}🛒 Toplu Satış{% endblock %}
+
+{% block content %}
+<div class="toplu-satis-container">
+    <h2>🛒 Toplu Satış Ekranı</h2>
+
+    <!-- 🔍 Barkod Giriş Alanı -->
+    <input type="text" id="barkodInput" class="form-control satis-barkod-input" placeholder="🔍 Barkod Okut veya Elle Gir">
+    <p class="text-muted">Barkod okutunca ilgili ürün otomatik seçilecektir.</p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <!-- 👤 Müşteri Seçimi -->
+        <label for="musteri">👤 Müşteri Seçin:</label>
+        <select name="musteri_id" id="musteri" class="form-control satis-musteri-secimi" required>
+            {% for musteri in musteriler %}
+                {% if musteri.ad_soyad != "Anonim Müşteri" %}
+                    <option value="{{ musteri.id }}">{{ musteri.ad_soyad }}</option>
+                {% endif %}
+            {% endfor %}
+            <option value="anonim">Anonim Müşteri</option> 
+        </select>
+
+        <br>
+
+        <!-- 📊 Ürün Seçim Tablosu -->
+        <div class="table-responsive">
+            <table class="table table-hover satis-table">
+                <thead>
+                    <tr>
+                        <th>✔</th>
+                        <th>📦 Ürün Adı</th>
+                        <th>📜 Barkod</th>  
+                        <th>📊 Stok Miktarı</th>
+                        <th>💰 Birim Fiyat</th>
+                        <th>🔢 Satış Adedi</th>
+                        <th>💵 Toplam Fiyat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for urun in urunler %}
+                    <tr data-barkod="{{ urun.barkod }}">
+                        <td>
+                            <input type="checkbox" name="secili_urun[]" value="{{ urun.id }}" class="urunSec">
+                        </td>
+                        <td>{{ urun.ad }}</td>
+                        <td class="barkodTD">{{ urun.barkod }}</td> 
+                        <td class="stokMiktari">{{ urun.stok_miktari }}</td>
+                        <td>
+                            <input type="number" name="fiyat_{{ urun.id }}" value="{{ urun.fiyat }}" step="0.01" class="fiyatInput" readonly>
+                        </td>
+                        <td>
+                            <input type="number" name="adet_{{ urun.id }}" min="1" max="{{ urun.stok_miktari }}" class="adetInput" readonly>
+                        </td>
+                        <td class="toplamFiyat">0.00 ₺</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 💰 Genel Toplam -->
+        <h3>💰 Genel Toplam: <span id="genelToplam">0.00</span> ₺</h3>
+
+        <button type="submit" id="satisTamamla" class="btn btn-success satis-btn" disabled>✅ Satışı Tamamla</button>
+        <a href="{% url 'stok_list' %}" class="btn btn-danger satis-btn">❌ İptal</a>
+    </form>
+</div>
+
+<!-- 📌 JavaScript Kodları Buraya Geldi -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    function hesaplaToplam() {
+        let genelToplam = 0;
+        let enAzBirUrunSecildi = false;
+
+        document.querySelectorAll("tbody tr").forEach(row => {
+            let checkbox = row.querySelector(".urunSec");
+            let fiyatInput = row.querySelector(".fiyatInput");
+            let adetInput = row.querySelector(".adetInput");
+            let toplamFiyatTD = row.querySelector(".toplamFiyat");
+            let stokMiktari = parseInt(row.querySelector(".stokMiktari").innerText) || 0;
+
+            if (checkbox.checked) {
+                enAzBirUrunSecildi = true;
+                fiyatInput.removeAttribute("readonly");
+                adetInput.removeAttribute("readonly");
+
+                let fiyat = parseFloat(fiyatInput.value) || 0;
+                let adet = parseInt(adetInput.value) || 0;
+
+                if (adet > stokMiktari) {
+                    adetInput.style.border = "2px solid red";  // 🔴 **Kırmızı çerçeve**
+                    adetInput.value = stokMiktari;
+                    adet = stokMiktari;
+                } else {
+                    adetInput.style.border = "";  // Geri normale al
+                }
+
+                let toplamFiyat = fiyat * adet;
+                toplamFiyatTD.innerText = toplamFiyat.toFixed(2) + " ₺";
+                genelToplam += toplamFiyat;
+            } else {
+                fiyatInput.setAttribute("readonly", "true");
+                adetInput.setAttribute("readonly", "true");
+                toplamFiyatTD.innerText = "0.00 ₺";
+                adetInput.style.border = ""; // Geri normale al
+            }
+        });
+
+        document.getElementById("genelToplam").innerText = genelToplam.toFixed(2);
+
+        // En az bir ürün seçildiyse butonu aktif et
+        document.getElementById("satisTamamla").disabled = !enAzBirUrunSecildi;
+    }
+
+    // Checkbox değiştiğinde ilgili inputları etkinleştir/devre dışı bırak
+    document.querySelectorAll(".urunSec").forEach(checkbox => {
+        checkbox.addEventListener("change", hesaplaToplam);
+    });
+
+    // Input değişikliklerinde toplam hesapla
+    document.addEventListener("input", hesaplaToplam);
+    document.addEventListener("change", hesaplaToplam);
+
+    // 📌 Barkod Okutunca Ürünü Seç
+    let barkodInput = document.getElementById("barkodInput");
+    let timer = null;
+
+    barkodInput.addEventListener("input", function () {
+        clearTimeout(timer);
+        let barkodGirilen = this.value.trim();
+
+        if (barkodGirilen.length === 12) { // **12 karaktere ulaştığında kontrol et**
+            timer = setTimeout(function () {
+                let bulundu = false;
+
+                document.querySelectorAll("tbody tr").forEach(row => {
+                    let urunBarkod = row.dataset.barkod;
+                    let checkbox = row.querySelector(".urunSec");
+                    let adetInput = row.querySelector(".adetInput");
+
+                    if (urunBarkod === barkodGirilen) {
+                        checkbox.checked = true;
+                        checkbox.dispatchEvent(new Event("change")); 
+                        adetInput.focus();  // 🔍 Barkod eşleşirse adet girişine odaklan
+                        barkodInput.value = "";  // Barkodu temizle (Tekrar giriş için)
+                        bulundu = true;
+                    }
+                });
+
+                if (!bulundu) {
+                    alert("⚠️ Barkod eşleşmedi! Lütfen tekrar deneyin.");
+                }
+            }, 500); // 500ms bekleme süresi
+        }
+    });
+});
+</script>
+
+{% endblock %}

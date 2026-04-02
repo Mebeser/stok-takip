@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Ürün Satış{% endblock %}
+
+{% block content %}
+<h2>📦 {{ urun.ad }} Satışı</h2>
+
+<form method="post" novalidate>  <!-- 🔴 Tarayıcı validasyonu kapattık -->
+    {% csrf_token %}
+
+    <div class="form-group">
+        {{ form.musteri.label_tag }}
+        {{ form.musteri }}
+    </div>
+
+    <div class="form-group">
+        {{ form.satis_adedi.label_tag }}
+        <input type="number" name="satis_adedi" required>
+    </div>
+
+    <div class="form-group">
+        {{ form.satis_fiyati.label_tag }}
+        <input type="number" name="satis_fiyati" required step="0.01">
+    </div>
+
+    <button type="submit" class="btn btn-success">💰 Satışı Tamamla</button>
+    <a href="{% url 'stok_list' %}" class="btn btn-secondary">İptal</a>
+</form>
+{% endblock %}

@@ -1,0 +1,30 @@
+# Python Derleme ve Cache Dosyaları
+__pycache__/
+*.py[cod]
+
+# IDE ve Editör Dosyaları
+.vscode/
+.idea/
+
+# Sanal Ortam (Virtual Environment)
+venv/
+env/
+
+# Statik ve Medya Dosyaları (Eğer Kullanılıyorsa)
+staticfiles/
+media/
+
+# Güvenlik Dosyaları ve Ortam Değişkenleri
+.env
+
+# Log Dosyaları
+*.log
+django_debug.log
+
+# Geçici ve Test Dosyaları
+*.xlsx
+structure.txt
+
+# Binary / Araç Dosyaları
+*.exe
+cloud-sql-proxy*.exe

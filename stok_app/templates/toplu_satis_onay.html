@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load custom_filters %}
+<div class="container mt-4">
+    <h2 class="text-center text-success">✅ Satış Tamamlandı!</h2>
+
+    <p><strong>Müşteri:</strong> {{ musteri.ad_soyad }}</p>
+
+    {% if satislar %}
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Ürün Adı</th>
+                <th>Satış Adedi</th>
+                <th>Toplam Fiyat</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for satis in satislar %}
+            <tr>
+                <td>{{ satis.urun.ad }}</td>
+                <td>{{ satis.satis_adedi }}</td>
+                <td>
+                    {{ satis.satis_adedi }} x 
+                    {{ satis.satis_fiyati|default:"0.00"|floatformat:2 }} ₺ = 
+                <strong>{{ satis.satis_adedi|mul:satis.satis_fiyati|floatformat:2 }} ₺</strong>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4 class="text-primary">🛒 Genel Toplam: <strong>{{ toplam_satis_fiyati|default:"0.00"|floatformat:2 }} ₺</strong></h4>
+
+    {% else %}
+    <p class="text-warning">⚠️ Hiçbir ürün seçilmedi veya satış işlemi yapılmadı.</p>
+    {% endif %}
+
+    <a href="{% url 'stok_list' %}" class="btn btn-primary">📦 Stok Listesine Dön</a>
+    <a href="{% url 'toplu_satis' %}" class="btn btn-success">➕ Yeni Toplu Satış Yap</a>
+</div>
+
+{% endblock %}

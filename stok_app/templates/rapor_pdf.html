@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Satış Raporu (PDF){% endblock %}
+
+{% block content %}
+    <h2>📄 Satış Raporu</h2>
+    <table border="1" cellpadding="5" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Tarih</th>
+                <th>Ürün</th>
+                <th>Müşteri</th>
+                <th>Adet</th>
+                <th>Fiyat</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for satis in satislar %}
+            <tr>
+                <td>{{ satis.satis_tarihi }}</td>
+                <td>{{ satis.urun.ad }}</td>
+                <td>{{ satis.musteri.ad_soyad}}</td>
+                <td>{{ satis.satis_adedi }}</td>
+                <td>{{ satis.satis_fiyati }} ₺</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

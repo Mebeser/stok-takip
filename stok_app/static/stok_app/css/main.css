@@ -1,0 +1,874 @@
+/* ================== GENEL STİLLER ================== */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 0;
+}
+
+/* ✅ Navbar */
+.navbar {
+    display: flex;
+    justify-content: center; /* Ortalamak için */
+    align-items: center;
+    background: #ffffff;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.navbar a {
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    padding: 10px 15px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+/* ✅ Butonları Daha Şık Hale Getiriyoruz */
+.navbar a.btn-info { background: #17a2b8; color: white; }
+.navbar a.btn-warning { background: #ffc107; color: black; }
+.navbar a.btn-danger { background: #dc3545; color: white; }
+.navbar a.btn-primary { background: #ff0004; color: white; }
+
+.navbar a:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Menü Butonu */
+.sidebar-toggle {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.sidebar-toggle:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+/* ✅ Sidebar */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    position: fixed;
+    left: -260px;
+    top: 0;
+    background: #007bff;
+    color: white;
+    padding: 20px;
+    transition: left 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin-bottom: 10px;
+    transition: background 0.3s ease;
+}
+
+.sidebar a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ================== SAYFA BAZLI STİLLER ================== */
+/* ✅ Stok Listesi Sayfası */
+.stok-listesi-page .content {
+    transition: margin-left 0.3s ease;
+    padding: 20px;
+    margin-top: 30px;
+    margin-left: 30px;
+}
+
+.stok-listesi-page .content.shift {
+    margin-left: 260px;
+}
+
+.stok-listesi-page table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+}
+
+.stok-listesi-page th, .stok-listesi-page td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.stok-listesi-page th {
+    background: #007bff;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+
+/* ✅ Butonlar */
+.btn {
+    padding: 12px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn.primary { background: #007bff; color: white; }
+.btn.secondary { background: #28a745; color: white; }
+.btn.contrast { background: #dc3545; color: white; }
+.btn.success { background: #17a2b8; color: white; }
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+/* ✅ Mobil Uyum */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .content {
+        padding: 15px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+}
+
+
+/* 🎨 Dashboard Genel Stil */
+.dashboard-page {
+    width: 90%; /* Sayfanın daha iyi ortalanması için */
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Kartlar */
+.dashboard-page .row {
+    display: flex;
+    justify-content: center; /* Kartları ortalamak için */
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+.dashboard-page .card {
+    flex: 1;
+    min-width: 280px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+}
+
+.dashboard-page .card:hover {
+    transform: scale(1.05);
+}
+
+/* ✅ Grafikler */
+.dashboard-page .charts-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.dashboard-page .chart-box {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    flex: 1;
+    min-width: 400px;
+    max-width: 600px;
+}
+
+/* 📊 Grafiklerin Görünmemesi Sorununu Çöz */
+.dashboard-page canvas {
+    display: block; /* Grafiklerin görünmesini sağlar */
+    width: 100%;
+    height: 300px; /* Yüksekliği artırarak görünmesini sağlıyoruz */
+}
+
+/* ✅ Mobil Uyum */
+@media (max-width: 768px) {
+    .dashboard-page {
+        width: 95%;
+    }
+
+    .dashboard-page .row {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dashboard-page .chart-box {
+        min-width: 100%;
+    }
+}
+/* 📊 Grafiklerin Görünmemesi Sorununu Çöz */
+.dashboard-page canvas {
+    display: block !important; /* Gizliyse aç */
+    width: 100% !important;
+    height: 300px !important; /* Sabit yükseklik ver */
+    max-width: 100%;
+    background-color: transparent; /* Arka planı şeffaf yap */
+}
+
+/* 🚨 Kritik Stok Tablosu */
+.dashboard-page .kritik-stok-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    text-align: center;
+}
+
+.dashboard-page .kritik-stok-container h3 {
+    font-size: 22px;
+    font-weight: bold;
+    color: #d9534f;
+    margin-bottom: 15px;
+}
+
+/* 🔥 Kritik Stok Tablosunu Güzelleştirelim */
+.dashboard-page .kritik-stok-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-page .kritik-stok-table th {
+    background: #d9534f;
+    color: #ffffff;
+    text-transform: uppercase;
+    padding: 12px;
+}
+
+.dashboard-page .kritik-stok-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+/* 🔥 Filtreleme Alanını Ortalayalım */
+.dashboard-page .kritik-stok-filtre {
+    width: 200px;
+    margin: 10px auto;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+
+
+/* 📌 Satış Geçmişi Konteyneri */
+.satis-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+/* 🔍 Filtreleme Alanı */
+.satis-filtre-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+/* 📊 Satış Tablosu */
+.satis-table {
+    border-collapse: collapse;
+    width: 100%;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.satis-table th {
+    background: #007bff;
+    color: white;
+    padding: 12px;
+    text-transform: uppercase;
+}
+
+.satis-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+/* 📅 Tarih Alanı */
+.satis-table td:last-child {
+    font-size: 14px;
+    color: #555;
+}
+
+/* 💰 Toplam Tutar Vurgusu */
+.satis-table td strong {
+    color: #28a745;
+    font-size: 16px;
+}
+
+/* 📌 Responsive İçin */
+@media (max-width: 768px) {
+    .satis-filtre-form {
+        flex-direction: column;
+    }
+
+    .satis-table td, .satis-table th {
+        font-size: 14px;
+    }
+}
+
+/* 🔙 Stok Listesine Dön Butonu */
+.satis-don-btn {
+    display: block;
+    width: fit-content;
+    margin: 20px auto;
+    text-align: center;
+    padding: 10px 20px;
+}
+
+
+
+/* 📦 Toplu Satış Konteyner */
+.toplu-satis-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+/* 🔍 Barkod Giriş Alanı */
+.satis-barkod-input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #007bff;
+    border-radius: 6px;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+/* 👤 Müşteri Seçimi */
+.satis-musteri-secimi {
+    width: 50%;
+    padding: 10px;
+    border: 2px solid #28a745;
+    border-radius: 6px;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+/* 📊 Satış Tablosu */
+.satis-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.satis-table th {
+    background: #007bff;
+    color: white;
+    padding: 12px;
+    text-transform: uppercase;
+}
+
+.satis-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+/* 💰 Genel Toplam Vurgusu */
+#genelToplam {
+    font-size: 22px;
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* ✅ Satış Butonları */
+.satis-btn {
+    padding: 12px 20px;
+    font-size: 16px;
+    margin: 10px 5px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.satis-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* 📌 Mobil Uyumluluk */
+@media (max-width: 768px) {
+    .satis-musteri-secimi {
+        width: 100%;
+    }
+
+    .satis-table th, .satis-table td {
+        font-size: 14px;
+    }
+}
+/* 📏 Satış Adedi, Birim Fiyat ve Diğer Input Kutularını Aynı Boyutta Yap */
+.satis-table input[type="number"] {
+    width: 100px;  /* Genişlik */
+    height: 40px;  /* Yükseklik */
+    text-align: center; /* İçeriği ortala */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+/* 🔢 Sadece Satış Adedi Kutusunu Daha Belirgin Yap */
+.satis-table .adetInput {
+    width: 80px;
+    font-weight: bold;
+}
+
+/* 📌 Responsive İçin */
+@media (max-width: 768px) {
+    .satis-table input[type="number"] {
+        width: 80px;
+        font-size: 14px;
+    }
+}
+
+
+/* 📦 Ürün Ekleme Konteyneri */
+.urun-ekle-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 📌 Form İçindeki Giriş Alanları */
+.urun-form .form-group {
+    margin-bottom: 15px;
+}
+
+.urun-form label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* 🔢 Input Kutularını Standart Hale Getir */
+.urun-form input,
+.urun-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+/* ✅ Kaydet ve İptal Butonları */
+.urun-form .btn {
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.urun-form .btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.urun-form .btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+/* 📌 Responsive İçin */
+@media (max-width: 768px) {
+    .urun-ekle-container {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .urun-form input,
+    .urun-form select {
+        font-size: 14px;
+    }
+}
+
+
+/* 🛠️ Ürün Güncelleme Konteyneri */
+.urun-guncelle-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 📌 Form İçindeki Giriş Alanları */
+.urun-form .form-group {
+    margin-bottom: 15px;
+}
+
+.urun-form label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* 🔢 Input Kutularını Standart Hale Getir */
+.urun-form input,
+.urun-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+/* ✅ Kaydet ve Vazgeç Butonları */
+.urun-form .btn {
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.urun-form .btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.urun-form .btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+/* 📌 Responsive İçin */
+@media (max-width: 768px) {
+    .urun-guncelle-container {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .urun-form input,
+    .urun-form select {
+        font-size: 14px;
+    }
+}
+
+
+/* 👥 Müşteri Ekleme Konteyneri */
+.musteri-ekle-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 📌 Form İçindeki Giriş Alanları */
+.musteri-form .form-group {
+    margin-bottom: 15px;
+}
+
+.musteri-form label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* 🔢 Input ve Textarea Kutularını Standart Hale Getir */
+.musteri-form input,
+.musteri-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+/* ✏️ Adres Kutusu */
+.musteri-form textarea {
+    height: 100px;
+    resize: none;
+}
+
+/* ✅ Kaydet ve İptal Butonları */
+.musteri-form .btn {
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.musteri-form .btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.musteri-form .btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+/* 📌 Responsive İçin */
+@media (max-width: 768px) {
+    .musteri-ekle-container {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .musteri-form input,
+    .musteri-form textarea {
+        font-size: 14px;
+    }
+}
+
+
+
+/* 👥 Müşteri Listesi Konteyneri */
+.musteri-listesi-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 📌 Tablo Stili */
+.table {
+    border-collapse: collapse;
+    width: 100%;
+    background: #f9f9f9;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.thead-dark th {
+    background: #007bff;
+    color: white;
+}
+
+/* ✏️ Güncelle ve 🗑 Sil Butonları */
+.btn {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+/* 📌 Responsive İçin */
+@media (max-width: 768px) {
+    .musteri-listesi-container {
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .table th, .table td {
+        font-size: 14px;
+    }
+}
+
+
+/* Excel Yükleme Sayfası İçin */
+.excel-container {
+    max-width: 700px;
+    margin: auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Listeyi daha okunaklı yapmak için */
+.excel-container .list-group-item {
+    border: none;
+    background: #f8f9fa;
+    font-size: 16px;
+}
+
+
+
+
+/* ✅ Raporlama Sayfası Düzeni */
+.raporlama-page {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* ✅ Tablo Stili */
+.raporlama-page table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.raporlama-page th, .raporlama-page td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.raporlama-page th {
+    background: #007bff;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+/* ✅ Filtre Butonları */
+.raporlama-page .btn-primary {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.raporlama-page .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* ✅ İndirme Butonları */
+.raporlama-page .btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.raporlama-page .btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* ✅ Genel Toplam Kısmı */
+#genelToplam {
+    font-size: 22px;
+    color: #28a745;
+    font-weight: bold;
+}
+
+/* ✅ Mobil Uyum */
+@media (max-width: 768px) {
+    .raporlama-page {
+        padding: 10px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    .raporlama-page th, .raporlama-page td {
+        padding: 8px;
+    }
+}
+
+
+
+/* Sayfanın tamamını ortalamak için */
+.vh-100 {
+    height: 100vh; /* Sayfa yüksekliğinin tamamını kaplar */
+}
+
+/* Form içindeki inputları düzenleme */
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Formun gövdesini ortalamak için */
+.d-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Buton stilini güzelleştirme */
+.btn-success {
+    background-color: #28a745;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>📜 İşlem Geçmişi</h2>
+<table border="1">
+    <tr>
+        <th>Kullanıcı</th>
+        <th>Kategori</th>
+        <th>İşlem</th>
+        <th>Tarih</th>
+    </tr>
+    {% for log in loglar %}
+    <tr>
+        <td>{{ log.kullanici.username }}</td>
+        <td>{{ log.kategori }}</td>
+        <td>{{ log.mesaj }}</td>
+        <td>{{ log.tarih }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}📂 Ürünleri Excel'den Yükle{% endblock %}
+
+{% block content %}
+<div class="excel-container">
+    <h2 class="mb-3 text-center">📂 Excel ile Ürün Yükleme</h2>
+
+    <!-- 📥 Örnek Excel İndirme Butonu -->
+    <div class="mb-4 text-center">
+        <a href="{% url 'ornek_excel_indir' %}" class="btn btn-primary">
+            📥 Örnek Excel İndir
+        </a>
+    </div>
+
+    <!-- ⚠️ Format Uyarısı -->
+    <div class="alert alert-info">
+        <b>⚠️ Lütfen dosyanızın aşağıdaki formatta olduğundan emin olun:</b>
+    </div>
+    
+    <ul class="list-group mb-4">
+        <li class="list-group-item"><b>ad</b>: Ürün adı</li>
+        <li class="list-group-item"><b>kategori</b>: Ürün kategorisi</li>
+        <li class="list-group-item"><b>stok_miktari</b>: Mevcut stok</li>
+        <li class="list-group-item"><b>birim</b>: Birim türü (kg, adet vb.)</li>
+        <li class="list-group-item"><b>fiyat</b>: Birim fiyat</li>
+        <li class="list-group-item"><b>kritik_stok</b>: Kritik stok seviyesi</li>
+        <li class="list-group-item"><b>barkod</b>: (Opsiyonel) Ürüne özel barkod (Eğer boş bırakılırsa otomatik oluşturulacaktır)</li>
+    </ul>
+
+    <!-- 📤 Dosya Yükleme Formu -->
+    <form method="post" enctype="multipart/form-data" class="p-3 border rounded bg-light">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="file" class="form-label">📁 Excel Dosyası Seç</label>
+            <input type="file" name="file" accept=".xlsx, .xls" required class="form-control">
+        </div>
+        <button type="submit" class="btn btn-success w-100">📤 Yükle</button>
+    </form>
+
+    <!-- ✅ Başarı / Hata Mesajları -->
+    {% if messages %}
+        <div class="mt-3">
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

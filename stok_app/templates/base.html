@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Stok Takip{% endblock %}</title>
+    {% load static %}
+    <link rel="icon" href="https://storage.googleapis.com/stok-takip-454309.appspot.com/static/favicon.ico">
+    {% if debug %}
+    <link rel="stylesheet" href="{% static 'stok_app/css/main.css' %}">
+{% else %}
+    <link rel="stylesheet" href="https://storage.googleapis.com/stok-takip-454309.appspot.com/static/stok_app/css/main.css">
+{% endif %}
+    <!--<link rel="stylesheet" href="{% static 'stok_app/css/main.css' %}"> -->
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline';">-->
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+<!-- ✅ NAVBAR -->
+<nav class="navbar">
+    {% if request.resolver_match.url_name not in "login signup" %}
+        <a href="{% url 'dashboard' %}" class="btn btn-info">📊 Genel Bakış</a> |
+        <a href="{% url 'stok_list' %}">📦 Stok Listesi</a> | 
+        <a href="{% url 'rapor_sonuc' %}" class="btn btn-warning">📈 Raporlar</a> | <!-- ✅ EKLENDİ -->
+
+        {% if user.is_authenticated %}
+            Hoşgeldin, {{ user.username }} |
+            <a href="{% url 'logout' %}" class="btn btn-danger">🚪 Çıkış Yap</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-primary">🔑 Giriş Yap</a> |
+            <a href="{% url 'signup' %}" class="btn-signup">✍️ Üye Ol</a>
+        {% endif %}
+    {% endif %}
+</nav>
+
+<!-- ✅ MESAJ ALANI -->
+{% if messages %}
+    <div id="message-container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        setTimeout(function() {
+            var msgContainer = document.getElementById("message-container");
+            if (msgContainer) {
+                msgContainer.style.opacity = "0"; 
+                setTimeout(() => msgContainer.remove(), 1000);
+            }
+        }, 4000);
+    </script>
+{% endif %}
+
+<!-- ✅ ANA İÇERİK -->
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+{% block scripts %}{% endblock %}
+</body>
+</html>

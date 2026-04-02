@@ -1,0 +1,12 @@
+# Sanal ortam, gereksiz dosyalar ve büyük klasörleri hariç tut
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+.DS_Store
+node_modules/
+.env
+#staticfiles/
+migrations/

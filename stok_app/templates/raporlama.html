@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}📊 Raporlama{% endblock %}
+
+{% block content %}
+<div class="container raporlama-page"> 
+<h2>📊 Satış Raporları</h2>
+
+<!-- 🔎 Filtre Formu -->
+<form id="rapor-form" method="GET" action="{% url 'rapor_sonuc' %}" class="form-inline mb-3">
+    <input type="date" name="start_date" class="form-control mx-2" placeholder="Başlangıç Tarihi">
+    <input type="date" name="end_date" class="form-control mx-2" placeholder="Bitiş Tarihi">
+    
+    <!-- 📌 Ürün Dropdown -->
+    <select name="urun" class="form-control mx-2">
+        <option value="">Tüm Ürünler</option>
+        {% for urun in urunler %}
+            <option value="{{ urun.id }}">{{ urun.ad }}</option>
+        {% endfor %}
+    </select>
+
+    <!-- 📌 Müşteri Dropdown -->
+    <select name="musteri" class="form-control mx-2">
+        <option value="">Tüm Müşteriler</option>
+        {% for musteri in musteriler %}
+            <option value="{{ musteri.id }}">{{ musteri.ad_soyad }}</option>
+        {% endfor %}
+    </select>
+    
+    <button type="submit" class="btn btn-primary">🔎 Filtrele</button>
+</form>
+
+<!-- 📥 Raporları İndirme Butonları -->
+<div class="mb-3">
+    <a id="excel-indir-btn" href="#" class="btn btn-success">📥 Excel İndir</a>
+    <a id="pdf-indir-btn" href="{% url 'pdf_rapor' %}" class="btn btn-danger">📄 PDF İndir</a>
+</div>
+
+<script>
+    document.getElementById("excel-indir-btn").addEventListener("click", function(event) {
+        event.preventDefault();
+        let form = document.getElementById("rapor-form");
+        let params = new URLSearchParams(new FormData(form)).toString();
+        window.location.href = "{% url 'excel_rapor' %}?" + params;
+    });
+
+    document.getElementById("pdf-indir-btn").addEventListener("click", function(event) {
+        event.preventDefault();
+        let form = document.getElementById("rapor-form");
+        let params = new URLSearchParams(new FormData(form)).toString();
+        window.location.href = this.href + "?" + params;
+    });
+</script>
+
+<!-- 📜 Satışları Listeleme -->
+{% if satislar %}
+<table class="table table-bordered" id="raporTablo">
+    <thead class="thead-dark">
+        <tr>
+            <th>Tarih</th>
+            <th>Ürün</th>
+            <th>Müşteri</th>
+            <th>Adet</th>
+            <th>Birim Fiyat</th>
+            <th>Toplam Tutar</th> <!-- ✅ Toplam Tutar -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for satis in satislar %}
+        <tr>
+            <td>{{ satis.satis_tarihi|date:"d/m/Y H:i" }}</td>
+            <td>{{ satis.urun.ad }}</td>
+            <td>{{ satis.musteri.ad_soyad }}</td>
+            <td class="adet">{{ satis.satis_adedi }}</td> <!-- 🔥 JavaScript burayı kullanacak -->
+            <td class="fiyat">{{ satis.satis_fiyati|floatformat:2 }}</td> <!-- 🔥 -->
+            <td class="toplamTutar"></td> <!-- 🔥 JavaScript burayı hesaplayacak -->
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- 💰 Genel Toplam (JavaScript ile hesaplanacak) -->
+<h3 class="mt-3">💰 Genel Toplam: <b id="genelToplam">0.00</b> ₺</h3>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    function hesaplaToplam() {
+        let genelToplam = 0;
+        document.querySelectorAll("#raporTablo tbody tr").forEach(row => {
+            let adet = parseFloat(row.querySelector(".adet").innerText) || 0;
+            let fiyat = parseFloat(row.querySelector(".fiyat").innerText.replace(",", ".")) || 0;
+            let toplam = adet * fiyat;
+            row.querySelector(".toplamTutar").innerText = toplam.toFixed(2) + " ₺";
+            genelToplam += toplam;
+        });
+        document.getElementById("genelToplam").innerText = genelToplam.toFixed(2) ;
+    }
+
+    hesaplaToplam(); // Sayfa yüklendiğinde hesapla
+
+    // Eğer filtreler varsa ve dinamik değişiyorsa burada event listener ekleyebiliriz
+    document.getElementById("rapor-form").addEventListener("change", function() {
+        setTimeout(hesaplaToplam, 500); // Filtreleme sonrası güncelle
+    });
+
+});
+</script>
+
+{% else %}
+<p class="text-danger">⚠️ Belirtilen kriterlere uygun satış bulunamadı.</p>
+{% endif %}
+
+{% endblock %}

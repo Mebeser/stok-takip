@@ -1,0 +1,22 @@
+# app.yaml - TEMEL YAPILANDIRMA
+runtime: python39
+entrypoint: waitress-serve --port=$PORT stok_takip.wsgi:application
+env_variables:
+  GCS_BUCKET_NAME: "stok-takip-454309.appspot.com"  # Otomatik oluşan bucket adınız
+  DB_NAME: "stoktakip_db"
+  DB_USER: "postgres"
+  DB_PASSWORD: "Gfbmeric19931907"
+  DB_HOST: "/cloudsql/stok-takip-454309:europe-west1:stoktakip-db"
+  DB_PORT: "5432"
+  DJANGO_SETTINGS_MODULE: "stok_takip.settings"
+  
+handlers:
+- url: /static
+  static_dir: staticfiles
+  secure: always
+  http_headers:
+    Access-Control-Allow-Origin: "*"
+
+- url: /.*
+  script: auto
+  secure: always

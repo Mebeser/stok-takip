@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Ürün Sil{% endblock %}
+
+{% block content %}
+<h2>Ürünü Sil</h2>
+<p>Bu ürünü silmek istediğinize emin misiniz? "{{ urun.ad }}"</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" style="background: red; color: white; padding: 10px; border-radius: 5px;">Evet, Sil</button>
+</form>
+<a href="{% url 'stok_list' %}">← Vazgeç</a>
+{% endblock %}

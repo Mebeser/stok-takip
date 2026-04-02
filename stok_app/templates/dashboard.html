@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block body_class %}dashboard-page{% endblock %}
+{% block title %}📊 Dashboard{% endblock %}
+{% load static %}
+
+{% block content %}
+
+<h2>Hoşgeldiniz, {{ user.username }}! 👋</h2>
+<p>📈 Satış performansınızı buradan takip edebilirsiniz.</p>
+
+{% if gunluk_satis_tutari > 10000 %}
+    <div class="alert alert-success">🔥 Bugün satış rekoru kırdınız! 💰</div>
+{% else %}
+    <div class="alert alert-info">💰 Satışlar iyi gidiyor, devam! 🚀</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card bg-success text-white text-center p-3">
+            <h4>💰 Günlük Satış Tutarı</h4>
+            <h2>{{ gunluk_satis_tutari|floatformat:2 }} ₺</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-primary text-white text-center p-3">
+            <h4>🏆 En Çok Satılan Ürün</h4>
+            <h2>{{ en_cok_satan.urun__ad|default:"Veri Yok" }}</h2>
+            <p>{{ en_cok_satan.toplam_satis|default:0 }} adet satıldı</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-info text-white text-center p-3">
+            <h4>📊 Toplam Satış Sayısı</h4>
+            <h2>{{ toplam_satis_sayisi }}</h2>
+        </div>
+    </div>
+</div>
+
+<h3 class="mt-4">📊 Günlük Satış Trendi</h3>
+<canvas id="gunlukSatisGrafik"></canvas>
+
+<h3 class="mt-4">🏅 En Çok Satılan Ürünler</h3>
+<canvas id="enCokSatanGrafik"></canvas>
+
+<div class="kritik-stok-container">
+    <h3>🚨 Kritik Stok Ürünleri</h3>
+    
+    <select id="stokFiltre" class="kritik-stok-filtre">
+        <option value="hepsi">Tüm Stoklar</option>
+        <option value="kritik">Kritik Stok</option>
+        <option value="yeterli">Yeterli Stok</option>
+    </select>
+
+    <table class="kritik-stok-table">
+        <thead>
+            <tr>
+                <th>Ürün Adı</th>
+                <th>Kalan Stok</th>
+                <th>Kritik Seviye</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for urun in kritik_urunler %}
+            <tr class="stokRow" data-stok="{{ urun.stok_miktari }}" data-kritik="{{ urun.kritik_stok }}">
+                <td>{{ urun.ad }}</td>
+                <td>{{ urun.stok_miktari }}</td>
+                <td>{{ urun.kritik_stok }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<a href="{% url 'logout' %}" class="btn btn-danger mt-3">🚪 Çıkış Yap</a>
+
+<style>
+#gunlukSatisGrafik, #enCokSatanGrafik {
+    max-width: 500px;
+    max-height: 300px;
+    margin: auto;
+    display: block;
+}
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let satisLabels = JSON.parse('{{ satis_trendi_labels|safe|escapejs }}');
+    let satisData = JSON.parse('{{ satis_trendi_data|safe|escapejs }}');
+    let enCokSatanLabels = JSON.parse('{{ en_cok_satan_labels|safe|escapejs }}');
+    let enCokSatanData = JSON.parse('{{ en_cok_satan_data|safe|escapejs }}');
+
+    let ctx1 = document.getElementById("gunlukSatisGrafik").getContext("2d");
+    new Chart(ctx1, {
+        type: "bar",
+        data: {
+            labels: satisLabels,
+            datasets: [{
+                label: "Günlük Satış Tutarı (₺)",
+                data: satisData,
+                backgroundColor: "rgba(54, 162, 235, 0.5)",
+                borderColor: "rgba(54, 162, 235, 1)",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    let ctx2 = document.getElementById("enCokSatanGrafik").getContext("2d");
+    new Chart(ctx2, {
+        type: "doughnut",
+        data: {
+            labels: enCokSatanLabels,
+            datasets: [{
+                label: "Satış Adedi",
+                data: enCokSatanData,
+                backgroundColor: ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0", "#9966ff"],
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+    // Kritik stok filtreleme
+    document.getElementById("stokFiltre").addEventListener("change", function() {
+        let secilen = this.value;
+        document.querySelectorAll(".stokRow").forEach(row => {
+            let stok = parseInt(row.dataset.stok) || 0;
+            let kritik = parseInt(row.dataset.kritik) || 0;
+
+            if (secilen === "kritik" && stok >= kritik) {
+                row.style.display = "none";
+            } else if (secilen === "yeterli" && stok < kritik) {
+                row.style.display = "none";
+            } else {
+                row.style.display = "table-row";
+            }
+        });
+    });
+
+    // Kritik stok vurgulama
+    document.querySelectorAll(".stokRow").forEach(row => {
+        let stok = parseInt(row.dataset.stok) || 0;
+        let kritik = parseInt(row.dataset.kritik) || 0;
+
+        if (stok < kritik) {
+            row.style.backgroundColor = "#ffebee";
+            row.style.color = "#c62828";
+            row.style.fontWeight = "bold";
+        }
+    });
+
+    console.log("✅ Kritik stok vurgulama aktif!");
+});
+</script>
+{% endblock %}
